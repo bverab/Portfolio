@@ -1,0 +1,204 @@
+---
+const items = [
+  {
+    types: ["education"],
+    role: "Ingeniero Civil en Computación",
+    org: "Universidad de Chile",
+    period: "2025",
+    badge: "Distinción Máxima",
+    summary: "Carrera enfocada en sistemas computacionales, algoritmos y desarrollo de software, con orientación hacia la Ciencia de Datos y el Machine Learning.",
+    bullets: [],
+  },
+  {
+    types: ["education"],
+    role: "Licenciado en Astronomía",
+    org: "Universidad de Chile",
+    period: "2025",
+    badge: "Distinción",
+    summary: "Formación científica rigurosa en análisis de datos observacionales, estadística inferencial y modelamiento de fenómenos físicos complejos.",
+    bullets: [],
+  },
+  {
+    types: ["work"],
+    role: "Memoria de Título — Clasificación Jerárquica con BERT",
+    org: "Universidad de Chile",
+    period: "Mar 2024 – May 2025",
+    badge: null,
+    summary: "Desarrollo de un modelo NLP de clasificación jerárquica supervisada sobre documentos científicos usando BERT Multilingual.",
+    bullets: [
+      "Arquitectura de múltiples entradas paralelas (título, resumen y keywords) con embeddings individuales.",
+      "Entrenamiento con PyTorch y Focal Loss, con validación jerárquica y métricas Top-K por nivel.",
+      "El modelo superó el baseline: de 0% a 28% de accuracy en Top-10 del nivel más específico.",
+      "Visualización e interpretación con SHAP y UMAP para detectar ruido y ambigüedad semántica.",
+    ],
+  },
+  {
+    types: ["work", "education"],
+    role: "Practicante — Plataforma Web ESO/ALMA (AgePro)",
+    org: "Universidad de Chile + ESO/ALMA",
+    period: "Mar 2025 – Jul 2025",
+    badge: null,
+    summary: "Co-diseño de una plataforma web para publicar y explorar datos astronómicos del proyecto AgePro de ALMA, con supervisión directa de un profesor.",
+    bullets: [
+      "Lideré la interfaz de visualización de datos, mejorando usabilidad y reduciendo tiempos de búsqueda.",
+      "Coordinación técnica en equipo ágil con flujo básico de CI/CD mediante GitHub Actions.",
+      "Comunicación interdisciplinaria entre equipos de astronomía e ingeniería.",
+    ],
+  },
+  {
+    types: ["work"],
+    role: "Practicante — Desarrollo Web",
+    org: "TecnoMeds SPA & Impacto Corp SA",
+    period: "2023 – 2024",
+    badge: null,
+    summary: "Participación en equipos multidisciplinarios para el desarrollo de soluciones web y gestión de infraestructura digital.",
+    bullets: [
+      "Apoyo al desarrollo de nuevas funcionalidades y mantenimiento de sistemas existentes.",
+      "Colaboración con equipos de diseño y QA bajo metodologías ágiles.",
+      "Resolución autónoma de errores y propuestas de mejoras en procesos y documentación técnica.",
+    ],
+  },
+  {
+    types: ["work"],
+    role: "Practicante — Análisis de Datos Astronómicos",
+    org: "Departamento de Astronomía, Universidad de Chile",
+    period: "Ene – Feb 2022",
+    badge: null,
+    summary: "Análisis de series temporales multibanda a partir de datos astronómicos reales.",
+    bullets: [
+      "Construcción de pipelines para limpieza, visualización y simulación de curvas de luz con NumPy y Pandas.",
+      "Aplicación de Power Spectrum Density para caracterización de patrones de variabilidad complejos.",
+      "Investigación en detección de patrones sutiles en datos ruidosos y eventos astrofísicos.",
+    ],
+  },
+];
+
+const pillConfig: Record<string, { label: string; classes: string }> = {
+  education: { label: "Educación",   classes: "bg-cyan-500/15 text-cyan-300 border-cyan-500/20" },
+  work:      { label: "Experiencia", classes: "bg-white/8 text-white/50 border-white/10" },
+};
+---
+
+<section id="experiencia" class="w-full max-w-6xl mx-auto px-6 py-20">
+  <div class="max-w-5xl mx-auto p-14">
+
+    <h2 class="text-3xl font-semibold text-white mb-12">Formación y Experiencia</h2>
+
+    <div class="relative">
+      <div class="absolute left-0 top-2 bottom-2 w-px bg-white/10"></div>
+
+      <div class="flex flex-col gap-4">
+        {items.map((item) => (
+          <div class="pl-8 relative">
+
+            <div class={`absolute left-0 top-5 w-2 h-2 rounded-full -translate-x-[3.5px]
+              ${item.types.includes("education") ? "bg-cyan-400" : "bg-white/35"}`}>
+            </div>
+
+            <button
+              class="accordion-btn w-full text-left rounded-xl border border-white/8 bg-white/3 px-5 py-4 cursor-pointer
+                     transition-all duration-300 group"
+              aria-expanded="false"
+            >
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex flex-col gap-1.5">
+
+                  <div class="flex gap-2 flex-wrap">
+                    {item.types.map((t) => (
+                      <span class={`text-xs font-medium px-2 py-0.5 rounded-full border ${pillConfig[t].classes}`}>
+                        {pillConfig[t].label}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                    <span class="text-base font-medium text-white/90">{item.role}</span>
+                    <span class="text-sm text-white/30">·</span>
+                    <span class="text-sm text-white/55">{item.org}</span>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-white/35">{item.period}</span>
+                    {item.badge && (
+                      <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {(item.summary || item.bullets.length > 0) && (
+                  <svg
+                    class="chevron shrink-0 mt-1 w-4 h-4 text-white/25 transition-transform duration-300 group-hover:text-white/50"
+                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                  >
+                    <path d="M6 9l6 6 6-6"/>
+                  </svg>
+                )}
+              </div>
+
+              <div class="accordion-body overflow-hidden" style="max-height:0; transition: max-height 0.35s ease">
+                <div class="pt-4 pb-1">
+                  {item.summary && (
+                    <p class="text-sm text-white/55 leading-relaxed mb-3">{item.summary}</p>
+                  )}
+                  {item.bullets.length > 0 && (
+                    <ul class="flex flex-col gap-2">
+                      {item.bullets.map((b) => (
+                        <li class="flex gap-2 text-sm text-white/50 leading-relaxed">
+                          <span class="mt-[7px] w-1 h-1 rounded-full bg-cyan-400/60 shrink-0"></span>
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".accordion-btn").forEach((btn) => {
+    const body    = btn.querySelector<HTMLElement>(".accordion-body")!;
+    const chevron = btn.querySelector<HTMLElement>(".chevron");
+
+    btn.addEventListener("click", () => {
+      const isOpen = btn.getAttribute("aria-expanded") === "true";
+      if (isOpen) {
+        body.style.maxHeight = "0";
+        btn.setAttribute("aria-expanded", "false");
+        chevron?.classList.remove("rotate-180");
+      } else {
+        body.style.maxHeight = body.scrollHeight + "px";
+        btn.setAttribute("aria-expanded", "true");
+        chevron?.classList.add("rotate-180");
+      }
+    });
+  });
+</script>
+
+<style>
+  .accordion-btn {
+    transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .accordion-btn:hover {
+    background: rgba(34, 211, 238, 0.04);
+    border-color: rgba(34, 211, 238, 0.25);
+    box-shadow: 0 0 14px rgba(34, 211, 238, 0.06);
+  }
+
+  .accordion-btn[aria-expanded="true"] {
+    background: rgba(34, 211, 238, 0.06);
+    border-color: rgba(34, 211, 238, 0.32);
+    box-shadow: 0 0 16px rgba(34, 211, 238, 0.08);
+  }
+</style>

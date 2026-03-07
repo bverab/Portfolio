@@ -1,0 +1,64 @@
+---
+import "../styles/animations.css";
+import Carrusel from "./Carrusel.astro";
+import SocialBtn from "./SocialBtn.astro";
+import GitHub from "./icons/GitHub.astro";
+import LinkedIn from "./icons/LinkedIn.astro";
+import Mail from "./icons/Mail.astro";
+
+const techStack = [
+  { name: "Python",       icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+  { name: "Pandas",       icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg" },
+  { name: "NumPy",        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg" },
+  { name: "Scikit-learn", icon: "https://upload.wikimedia.org/wikipedia/commons/0/05/Scikit_learn_logo_small.svg" },
+  { name: "TensorFlow",   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg" },
+  { name: "SQL",          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
+  { name: "R",            icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/r/r-original.svg" },
+  { name: "Jupyter",      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original.svg" },
+  { name: "Git",          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
+  { name: "PyTorch",      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg" },
+];
+---
+
+<section id="inicio" class="w-full max-w-6xl mx-auto px-6 pt-32 pb-6">
+  <div class="max-w-5xl mx-auto space-y-8 md:py-36 p-14">
+
+    <!-- Saludo -->
+    <div class="flex items-baseline gap-2">
+      <p class="text-xl opacity-70">
+        Hola, soy <span class="font-semibold opacity-100">Bastián Vera</span>
+      </p>
+    </div>
+
+    <!-- Título + descripción -->
+    <div class="flex justify-start gap-25">
+      <h1 class="text-5xl md:text-6xl font-medium leading-none text-[var(--white)]">
+        Data<br />Scientist
+      </h1>
+      <p class="text-base md:text-2xl leading-relaxed text-[var(--white-icon)] opacity-70 max-w-xl">
+        Abordo problemas complejos mediante
+        <span class="text-analytic-glow font-medium">análisis estadístico y modelamiento de datos</span>,
+        generando insights accionables a partir de la información.
+      </p>
+    </div>
+
+    <!-- Botonera social -->
+    <div class="flex items-center gap-3 pl-1">
+      <SocialBtn href="https://github.com/bverab" label="GitHub">
+        <GitHub width="26" height="26" />
+      </SocialBtn>
+
+      <SocialBtn href="https://linkedin.com/in/bverab" label="LinkedIn">
+        <LinkedIn width="26" height="26" />
+      </SocialBtn>
+
+      <SocialBtn href="https://mail.google.com/mail/?view=cm&to=bastianverab@gmail.com" label="Gmail" target="_blank" rel="noopener noreferrer">
+        <Mail width="26" height="26" />
+      </SocialBtn>
+    </div>
+
+    <!-- Carrusel -->
+    <Carrusel items={techStack} speed={30} />
+
+  </div>
+</section>

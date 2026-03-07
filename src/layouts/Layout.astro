@@ -1,0 +1,184 @@
+---
+import "@fontsource-variable/onest"
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+import { ViewTransitions } from "astro:transitions"
+import "../styles/global.css";
+
+interface Props {
+  title: string
+  description: string
+}
+
+const { description, title } = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <ViewTransitions />
+  </head>
+  <body>
+    <!-- Fondo degradado cyan/turquesa -->
+    <div class="fixed inset-0 -z-10 [background:radial-gradient(125%_125%_at_50%_10%,#000_50%,#0af_100%)]"></div>
+
+    <!-- Canvas estrellas fugaces — detrás de todo el contenido -->
+    <canvas id="shooting-stars" class="fixed inset-0 -z-10 pointer-events-none"></canvas>
+
+    <!-- Contenido -->
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<script>
+  const canvas = document.getElementById("shooting-stars") as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d")!;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  interface Star {
+    x: number;
+    y: number;
+    len: number;       // longitud de la estela
+    speed: number;
+    angle: number;     // ángulo en radianes (diagonal suave)
+    opacity: number;
+    width: number;
+    life: number;      // frames actuales
+    maxLife: number;   // frames totales de vida
+  }
+
+  const stars: Star[] = [];
+  const MAX_STARS = 4; // máx simultáneas — muy sutil
+
+  function randomStar(): Star {
+    // ángulo diagonal suave: entre 20° y 40° (izq→der, arriba→abajo)
+    const angleDeg = 25 + Math.random() * 15;
+    const angle    = (angleDeg * Math.PI) / 180;
+
+    // nace en cualquier punto del borde superior o izquierdo
+    const fromTop  = Math.random() > 0.4;
+    const x = fromTop ? Math.random() * canvas.width : 0;
+    const y = fromTop ? 0 : Math.random() * canvas.height * 0.5;
+
+    return {
+      x, y,
+      len:     120 + Math.random() * 180,
+      speed:   4 + Math.random() * 4,
+      angle,
+      opacity: 0,
+      width:   0.6 + Math.random() * 0.8,
+      life:    0,
+      maxLife: 90 + Math.random() * 60,
+    };
+  }
+
+  // Siembra inicial espaciada en el tiempo
+  let frameCount = 0;
+
+  function spawnIfNeeded() {
+    if (stars.length < MAX_STARS && Math.random() < 0.008) {
+      stars.push(randomStar());
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    spawnIfNeeded();
+
+    for (let i = stars.length - 1; i >= 0; i--) {
+      const s = stars[i];
+      s.life++;
+
+      // Fade in primero 20% de vida, fade out últimos 30%
+      const progress = s.life / s.maxLife;
+      if (progress < 0.2)       s.opacity = progress / 0.2;
+      else if (progress > 0.7)  s.opacity = 1 - (progress - 0.7) / 0.3;
+      else                      s.opacity = 1;
+
+      s.x += Math.cos(s.angle) * s.speed;
+      s.y += Math.sin(s.angle) * s.speed;
+
+      // Punto cabeza de la estrella
+      const headX = s.x;
+      const headY = s.y;
+
+      // Punto cola (hacia atrás en el ángulo)
+      const tailX = headX - Math.cos(s.angle) * s.len;
+      const tailY = headY - Math.sin(s.angle) * s.len;
+
+      // Gradiente de la estela: cabeza brillante → cola transparente
+      const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
+      grad.addColorStop(0,   `rgba(0, 220, 255, 0)`);        // cola invisible
+      grad.addColorStop(0.6, `rgba(0, 220, 255, ${s.opacity * 0.25})`);
+      grad.addColorStop(1,   `rgba(180, 240, 255, ${s.opacity * 0.9})`); // cabeza cyan brillante
+
+      ctx.beginPath();
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(headX, headY);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth   = s.width;
+      ctx.lineCap     = "round";
+      ctx.stroke();
+
+      // Pequeño destello en la cabeza
+      const glow = ctx.createRadialGradient(headX, headY, 0, headX, headY, 3);
+      glow.addColorStop(0,   `rgba(180, 240, 255, ${s.opacity * 0.8})`);
+      glow.addColorStop(1,   `rgba(0, 220, 255, 0)`);
+      ctx.beginPath();
+      ctx.arc(headX, headY, 3, 0, Math.PI * 2);
+      ctx.fillStyle = glow;
+      ctx.fill();
+
+      // Eliminar si salió de pantalla o cumplió su vida
+      if (s.life >= s.maxLife || s.x > canvas.width + 50 || s.y > canvas.height + 50) {
+        stars.splice(i, 1);
+      }
+    }
+
+    frameCount++;
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+</script>
+
+<style is:global>
+  :root {
+    color-scheme: light dark;
+    --font-primary: "Onest Variable", sans-serif;
+  }
+
+  html, body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>

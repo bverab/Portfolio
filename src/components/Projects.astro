@@ -1,0 +1,169 @@
+---
+const projects = [
+  {
+    title: "Clasificación Jerárquica con BERT",
+    summary: "Modelo NLP de clasificación supervisada sobre documentos científicos.",
+    description: "Arquitectura de múltiples entradas paralelas (título, resumen y keywords) con embeddings individuales. Entrenamiento con PyTorch y Focal Loss. El modelo superó al baseline pasando de 0% a 28% de accuracy en Top-10 del nivel más específico. Interpretación con SHAP y UMAP.",
+    tags: ["Python", "PyTorch", "BERT", "NLP", "SHAP", "UMAP"],
+    github: "https://github.com/bverab/Memoria",
+    featured: true,
+  },
+  {
+    title: "Plataforma Web ESO/ALMA — AgePro",
+    summary: "Plataforma para publicar y explorar datos astronómicos de ALMA.",
+    description: "Co-diseño de una plataforma web para el proyecto AgePro junto a ESO/ALMA y la Universidad de Chile. Lideré la interfaz de visualización de datos mejorando usabilidad y reduciendo tiempos de búsqueda. Equipo ágil con CI/CD via GitHub Actions.",
+    tags: ["Python", "GitHub Actions", "CI/CD", "Visualización"],
+    github: "https://github.com/Grupo-ALMA-Proyecto-de-Software-2024/frontend",
+    featured: false,
+  },
+  {
+    title: "Pipelines de Series Temporales Astronómicas",
+    summary: "Análisis de curvas de luz multibanda con datos reales del Departamento de Astronomía.",
+    description: "Construcción de pipelines reproducibles para limpieza, visualización y simulación de curvas de luz. Aplicación de Power Spectrum Density para caracterización de patrones de variabilidad complejos. Detección de patrones sutiles en datos ruidosos.",
+    tags: ["Python", "NumPy", "Pandas", "Series temporales", "PSD"],
+    featured: false,
+  },
+];
+
+const githubIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="15" height="15" style="pointer-events:none"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>`;
+---
+
+<section id="proyectos" class="w-full max-w-6xl mx-auto px-6 py-20">
+  <div class="max-w-5xl mx-auto p-14">
+
+    <h2 class="text-3xl font-semibold text-white mb-12">Proyectos</h2>
+
+    <div class="bento-grid">
+      {projects.map((project) => (
+        <article class={`bento-card ${project.featured ? "bento-featured" : ""}`}>
+
+          <button class="card-toggle w-full text-left cursor-pointer" aria-expanded="false">
+            <div class="flex flex-col gap-3">
+
+              <div class="flex items-start justify-between gap-3">
+                <h3 class="text-base font-semibold text-white/90 leading-snug">
+                  {project.title}
+                </h3>
+                <div class="flex items-center gap-2 shrink-0 mt-0.5">
+                  <svg class="card-chevron text-white/25 transition-transform duration-300"
+                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"
+                    style="pointer-events:none">
+                    <path d="M6 9l6 6 6-6"/>
+                  </svg>
+                </div>
+              </div>
+
+              <p class="text-sm text-white/50 leading-relaxed">{project.summary}</p>
+
+              <div class="card-body overflow-hidden" style="max-height:0; transition: max-height 0.35s ease">
+                <p class="text-sm text-white/45 leading-relaxed pt-3 pb-1 border-t border-white/8">
+                  {project.description}
+                </p>
+              </div>
+
+              <div class="flex items-center justify-between gap-3 mt-auto pt-2">
+                <div class="flex flex-wrap gap-1.5">
+                  {project.tags.map((tag) => (
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-white/6 border border-white/10 text-white/45">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {project.github && (
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Ver en GitHub — ${project.title}`}
+                    class="github-link shrink-0 flex items-center gap-1 text-white/30
+                           hover:text-white/80 transition-colors duration-200"
+                    set:html={githubIcon}
+                  />
+                )}
+              </div>
+
+            </div>
+          </button>
+
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>(".github-link").forEach((link) => {
+    link.addEventListener("click", (e) => e.stopPropagation());
+  });
+
+  document.querySelectorAll<HTMLButtonElement>(".card-toggle").forEach((btn) => {
+    const card    = btn.closest<HTMLElement>(".bento-card")!;
+    const body    = btn.querySelector<HTMLElement>(".card-body")!;
+    const chevron = btn.querySelector<HTMLElement>(".card-chevron");
+
+    btn.addEventListener("click", () => {
+      const isOpen = btn.getAttribute("aria-expanded") === "true";
+      if (isOpen) {
+        body.style.maxHeight = "0";
+        btn.setAttribute("aria-expanded", "false");
+        chevron?.classList.remove("rotate-180");
+        card.classList.remove("bento-open");
+      } else {
+        body.style.maxHeight = body.scrollHeight + "px";
+        btn.setAttribute("aria-expanded", "true");
+        chevron?.classList.add("rotate-180");
+        card.classList.add("bento-open");
+      }
+    });
+  });
+</script>
+
+<style>
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .bento-featured { grid-column: 1 / -1; }
+
+  .bento-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    padding: 1.25rem 1.35rem;
+    transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .bento-card:hover {
+    background: rgba(34, 211, 238, 0.04);
+    border-color: rgba(34, 211, 238, 0.25);
+    box-shadow: 0 0 14px rgba(34, 211, 238, 0.06);
+  }
+
+  .bento-card.bento-open {
+    background: rgba(34, 211, 238, 0.06);
+    border-color: rgba(34, 211, 238, 0.32);
+    box-shadow: 0 0 16px rgba(34, 211, 238, 0.08);
+  }
+
+  .bento-featured {
+    border-left: 2px solid rgba(34, 211, 238, 0.35);
+  }
+
+  .bento-featured:hover,
+  .bento-featured.bento-open {
+    border-left-color: rgba(34, 211, 238, 0.65);
+  }
+
+  .card-toggle { background: none; border: none; padding: 0; }
+
+  @media (max-width: 640px) {
+    .bento-grid { grid-template-columns: 1fr; }
+    .bento-featured { grid-column: 1; }
+  }
+</style>

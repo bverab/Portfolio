@@ -1,0 +1,26 @@
+---
+// SocialBtn.astro — Botón cuadrado redondeado para redes sociales
+interface Props {
+  href: string;
+  label: string;
+  target?: string;
+  rel?: string;
+}
+
+const { href, label, target = "_blank", rel = "noopener noreferrer" } = Astro.props;
+---
+
+<a
+  href={href}
+  target={target}
+  rel={rel}
+  aria-label={label}
+  title={label}
+  class="inline-flex items-center justify-center w-14 h-14 rounded-xl
+         border border-white/15 bg-transparent text-white/50
+         transition-all duration-300
+         hover:text-white/90 hover:border-white/30 hover:bg-transparent
+         active:scale-95"
+>
+  <slot />
+</a>

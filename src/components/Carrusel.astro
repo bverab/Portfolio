@@ -1,0 +1,100 @@
+---
+interface Props {
+  items: { name: string; icon: string }[];
+  speed?: number;
+}
+
+const { items, speed = 50 } = Astro.props;
+const doubled = [...items, ...items];
+---
+
+<div class="marquee-outer">
+  <div class="marquee-track" style={`--speed: ${speed}s`}>
+    {doubled.map((tech) => (
+      <div class="marquee-item">
+        <img
+          src={tech.icon}
+          alt={tech.name}
+          width="28"
+          height="28"
+          loading="lazy"
+          decoding="async"
+        />
+        <span>{tech.name}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee-outer {
+    position: relative;
+    overflow: hidden;
+    padding: 0.5rem 0;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 1rem;
+    width: max-content;
+    animation: marquee var(--speed) linear infinite;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 1.35rem;
+    border-radius: 9999px;
+    background: transparent;
+    white-space: nowrap;
+    cursor: default;
+    transition:
+      border-color 0.3s ease,
+      background 0.3s ease,
+      transform 0.25s ease;
+  }
+
+  .marquee-item:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    background: transparent;
+    transform: translateY(-2px);
+  }
+
+  .marquee-item img {
+    width: 28px;
+    height: 28px;
+    opacity: 0.75;
+    transition: opacity 0.3s ease;
+  }
+
+  .marquee-item:hover img { opacity: 1; }
+
+  .marquee-item span {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    transition: color 0.3s ease;
+  }
+
+  .marquee-item:hover span { color: rgba(255, 255, 255, 0.9); }
+</style>

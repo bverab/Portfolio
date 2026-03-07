@@ -1,0 +1,23 @@
+/* ── Shimmer sweep — luz neon que barre el texto de izquierda a derecha ── */
+@keyframes shimmer-sweep {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+.text-analytic-glow {
+  background: linear-gradient(
+    90deg,
+    hsl(189, 94%, 61%)   0%,    /* cyan-400 base */
+    hsl(189, 94%, 61%)  30%,
+    hsl(0, 0%, 100%)    48%,    /* blanco puro — destello */
+    hsl(180, 100%, 70%) 54%,    /* cyan brillante post-destello */
+    hsl(189, 94%, 61%)  70%,
+    hsl(189, 94%, 61%) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-sweep 3.5s linear infinite;
+}

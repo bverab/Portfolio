@@ -1,0 +1,83 @@
+---
+const navLinks = [
+  { href: "#inicio",      label: "Inicio" },
+  { href: "#experiencia", label: "Experiencia" },
+  { href: "#proyectos",   label: "Proyectos" },
+  { href: "#about",    label: "Sobre mí" },
+];
+---
+
+<header class="fixed top-5 z-10 flex items-center justify-center w-full mx-auto mt-2">
+  <nav class="flex flex-row gap-x-15 opacity-80 rounded-full bg-[var(--white)]/10 backdrop-blur-sm px-5 py-2 text-m font-medium text-[var(--white)]">
+    {navLinks.map((link) => (
+      <a
+        href={link.href}
+        data-section={link.href.replace("#", "")}
+        class="nav-link hover:opacity-100 opacity-70 transition-all duration-300"
+      >
+        <span class="nav-dot"></span>
+        {link.label}
+      </a>
+    ))}
+  </nav>
+</header>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>("a.nav-link").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const id = link.getAttribute("href")!.replace("#", "");
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  const links = document.querySelectorAll<HTMLAnchorElement>("a.nav-link");
+
+  function setActive(id: string) {
+    links.forEach((link) => {
+      link.classList.toggle("nav-active", link.dataset.section === id);
+    });
+  }
+
+  setActive("inicio");
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    },
+    { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+  );
+
+  document.querySelectorAll<HTMLElement>("section[id]").forEach((s) => observer.observe(s));
+</script>
+
+<style>
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: rgb(34 211 238); /* cyan-400 */
+    flex-shrink: 0;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .nav-link.nav-active {
+    opacity: 1;
+  }
+
+  .nav-link.nav-active .nav-dot {
+    opacity: 1;
+    transform: scale(1);
+  }
+</style>
