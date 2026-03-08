@@ -45,7 +45,7 @@ const navLinks = [
       <a
         href={link.href}
         data-section={link.href.replace("#", "")}
-        class="mobile-link text-sm font-medium text-white/65 hover:text-white hover:bg-white/8 transition-all duration-200 py-2 px-3 rounded-xl block"
+        class="mobile-link text-sm font-medium text-white/50 transition-all duration-200 py-2 px-3 rounded-xl block"
       >
         {link.label}
       </a>
@@ -91,13 +91,22 @@ const navLinks = [
     });
   });
 
-  // Indicador activo
-  const links = document.querySelectorAll<HTMLAnchorElement>("a.nav-link");
+  // Indicador activo — aplica tanto a desktop como a móvil
+  const desktopLinks = document.querySelectorAll<HTMLAnchorElement>("a.nav-link");
+  const mobileLinks  = document.querySelectorAll<HTMLAnchorElement>("a.mobile-link");
+
   function setActive(id: string) {
-    links.forEach((link) => {
+    // Desktop: nav-dot + opacidad
+    desktopLinks.forEach((link) => {
       link.classList.toggle("nav-active", link.dataset.section === id);
     });
+    // Móvil: color cyan + fondo sutil
+    mobileLinks.forEach((link) => {
+      const isActive = link.dataset.section === id;
+      link.classList.toggle("mobile-active", isActive);
+    });
   }
+
   setActive("inicio");
 
   const observer = new IntersectionObserver(
@@ -112,6 +121,7 @@ const navLinks = [
 </script>
 
 <style>
+  /* ── Desktop ── */
   .nav-link {
     display: inline-flex;
     align-items: center;
@@ -132,4 +142,21 @@ const navLinks = [
 
   .nav-link.nav-active { opacity: 1; }
   .nav-link.nav-active .nav-dot { opacity: 1; transform: scale(1); }
+
+  /* ── Móvil ── */
+  .mobile-link {
+    border-left: 2px solid transparent;
+    transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .mobile-link:hover {
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.06);
+  }
+
+  .mobile-link.mobile-active {
+    color: rgb(34 211 238);
+    background: rgba(34, 211, 238, 0.07);
+    border-left-color: rgb(34 211 238);
+  }
 </style>
