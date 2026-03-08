@@ -13,8 +13,8 @@ const year = new Date().getFullYear();
       <!-- Línea dentro del contenedor -->
       <div class="w-full h-px bg-white/8 mb-10"></div>
 
-      <!-- 3 columnas: iconos | quote | luna -->
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-8 mb-10">
+      <!-- 3 columnas: iconos | quote | luna — apiladas en móvil -->
+      <div class="flex flex-col items-center gap-8 mb-10 sm:flex-row sm:items-center sm:justify-between">
 
         <!-- Izquierda: iconos -->
         <div class="flex items-center gap-6">
@@ -32,8 +32,8 @@ const year = new Date().getFullYear();
           </a>
         </div>
 
-        <!-- Centro: quote -->
-        <div class="quote-box flex-1 text-center px-8">
+        <!-- Centro: quote — sin bordes laterales en móvil -->
+        <div class="quote-box w-full text-center px-4 sm:flex-1 sm:px-8">
           <p class="text-sm font-medium leading-relaxed italic quote-text"></p>
           <p class="text-xs mt-1.5 quote-author"></p>
         </div>
@@ -160,11 +160,17 @@ const year = new Date().getFullYear();
   }
   .footer-icon:hover { color: rgba(34, 211, 238, 0.9); }
 
+  /* Bordes laterales de la quote solo en sm+ */
   .quote-box {
-    border-left: 1.5px solid rgba(34, 211, 238, 0.15);
-    border-right: 1.5px solid rgba(34, 211, 238, 0.15);
     padding: 0 1rem;
   }
+  @media (min-width: 640px) {
+    .quote-box {
+      border-left: 1.5px solid rgba(34, 211, 238, 0.15);
+      border-right: 1.5px solid rgba(34, 211, 238, 0.15);
+    }
+  }
+
   .quote-text   { color: rgba(34, 211, 238, 0.55); }
   .quote-author { color: rgba(255, 255, 255, 0.22); }
 

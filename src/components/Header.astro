@@ -3,12 +3,14 @@ const navLinks = [
   { href: "#inicio",      label: "Inicio" },
   { href: "#experiencia", label: "Experiencia" },
   { href: "#proyectos",   label: "Proyectos" },
-  { href: "#about",    label: "Sobre mí" },
+  { href: "#about",       label: "Sobre mí" },
 ];
 ---
 
-<header class="fixed top-5 z-10 flex items-center justify-center w-full mx-auto mt-2">
-  <nav class="flex flex-row gap-x-15 opacity-80 rounded-full bg-[var(--white)]/10 backdrop-blur-sm px-5 py-2 text-m font-medium text-[var(--white)]">
+<header class="fixed top-5 z-20 flex items-center justify-center w-full mx-auto mt-2 px-4">
+
+  <!-- Desktop: píldora original sin cambios -->
+  <nav class="hidden md:flex flex-row gap-x-15 opacity-80 rounded-full bg-[var(--white)]/10 backdrop-blur-sm px-5 py-2 text-m font-medium text-[var(--white)]">
     {navLinks.map((link) => (
       <a
         href={link.href}
@@ -20,9 +22,67 @@ const navLinks = [
       </a>
     ))}
   </nav>
+
+  <!-- Móvil: botón hamburger -->
+  <div class="md:hidden w-full flex justify-end">
+    <button id="menu-toggle" aria-label="Abrir menú"
+      class="p-2.5 rounded-xl bg-[var(--white)]/10 backdrop-blur-sm border border-white/10 text-white/70 hover:text-white transition-colors">
+      <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+      <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="hidden">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Móvil: dropdown -->
+  <div id="mobile-menu"
+    class="hidden absolute top-14 right-4 rounded-2xl bg-black/85 backdrop-blur-md border border-white/10 p-3 flex-col gap-1 min-w-44 z-30">
+    {navLinks.map((link) => (
+      <a
+        href={link.href}
+        data-section={link.href.replace("#", "")}
+        class="mobile-link text-sm font-medium text-white/65 hover:text-white hover:bg-white/8 transition-all duration-200 py-2 px-3 rounded-xl block"
+      >
+        {link.label}
+      </a>
+    ))}
+  </div>
+
 </header>
 
 <script>
+  const toggle    = document.getElementById("menu-toggle")!;
+  const menu      = document.getElementById("mobile-menu")!;
+  const iconOpen  = document.getElementById("icon-open")!;
+  const iconClose = document.getElementById("icon-close")!;
+
+  function closeMenu() {
+    menu.classList.add("hidden");
+    iconOpen.classList.remove("hidden");
+    iconClose.classList.add("hidden");
+  }
+
+  toggle.addEventListener("click", () => {
+    const isOpen = !menu.classList.contains("hidden");
+    menu.classList.toggle("hidden", isOpen);
+    iconOpen.classList.toggle("hidden", !isOpen);
+    iconClose.classList.toggle("hidden", isOpen);
+  });
+
+  document.querySelectorAll(".mobile-link").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const id = (link as HTMLAnchorElement).getAttribute("href")!.replace("#", "");
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      closeMenu();
+    });
+  });
+
+  // Scroll suave desktop
   document.querySelectorAll<HTMLAnchorElement>("a.nav-link").forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -31,14 +91,13 @@ const navLinks = [
     });
   });
 
+  // Indicador activo
   const links = document.querySelectorAll<HTMLAnchorElement>("a.nav-link");
-
   function setActive(id: string) {
     links.forEach((link) => {
       link.classList.toggle("nav-active", link.dataset.section === id);
     });
   }
-
   setActive("inicio");
 
   const observer = new IntersectionObserver(
@@ -49,7 +108,6 @@ const navLinks = [
     },
     { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
   );
-
   document.querySelectorAll<HTMLElement>("section[id]").forEach((s) => observer.observe(s));
 </script>
 
@@ -65,19 +123,13 @@ const navLinks = [
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background-color: rgb(34 211 238); /* cyan-400 */
+    background-color: rgb(34 211 238);
     flex-shrink: 0;
     opacity: 0;
     transform: scale(0);
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
-  .nav-link.nav-active {
-    opacity: 1;
-  }
-
-  .nav-link.nav-active .nav-dot {
-    opacity: 1;
-    transform: scale(1);
-  }
+  .nav-link.nav-active { opacity: 1; }
+  .nav-link.nav-active .nav-dot { opacity: 1; transform: scale(1); }
 </style>

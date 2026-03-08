@@ -4,7 +4,8 @@ import profileImg from "../assets/profile.jpg";
 ---
 
 <section id="about" class="w-full max-w-6xl mx-auto px-6 py-20">
-  <div class="max-w-5xl mx-auto p-14">
+  <!-- móvil: px-2 py-8 | desktop: p-14 -->
+  <div class="max-w-5xl mx-auto px-2 py-8 md:p-14">
 
     <h2 class="text-3xl font-semibold text-white mb-12">Sobre mí</h2>
 
@@ -52,8 +53,8 @@ import profileImg from "../assets/profile.jpg";
           ¡Conectemos y hablemos de datos, astronomía o lo que sea!
         </p>
 
-        <!-- Datos rápidos -->
-        <div class="grid grid-cols-2 gap-3 mt-2">
+        <!-- Datos rápidos: 1 col en móvil, 2 cols en sm+ -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
           {[
             { label: "Ubicación",      value: "Santiago, Chile" },
             { label: "Disponibilidad", value: "Abierto a oportunidades" },
