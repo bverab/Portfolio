@@ -87,7 +87,7 @@ const pillConfig: Record<string, { label: string; classes: string }> = {
     <div class="relative">
       <div class="absolute left-0 top-2 bottom-2 w-px bg-white/10"></div>
 
-      <div class="flex flex-col gap-1 md:gap-4">
+      <div class="flex flex-col gap-2 md:gap-4">
         {items.map((item) => (
           <div class="pl-8 relative">
 
@@ -138,21 +138,24 @@ const pillConfig: Record<string, { label: string; classes: string }> = {
                 )}
               </div>
 
-              <div class="accordion-body overflow-hidden" style="max-height:0; transition: max-height 0.35s ease">
-                <div class="pt-4 pb-1">
-                  {item.summary && (
-                    <p class="text-sm text-white/55 leading-relaxed mb-3">{item.summary}</p>
-                  )}
-                  {item.bullets.length > 0 && (
-                    <ul class="flex flex-col gap-2">
-                      {item.bullets.map((b) => (
-                        <li class="flex gap-2 text-sm text-white/50 leading-relaxed">
-                          <span class="mt-[7px] w-1 h-1 rounded-full bg-cyan-400/60 shrink-0"></span>
-                          <span>{b}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+              <!-- Accordion body: grid-template-rows para compatibilidad total con Safari iOS -->
+              <div class="accordion-body">
+                <div class="accordion-inner">
+                  <div class="pt-4 pb-1">
+                    {item.summary && (
+                      <p class="text-sm text-white/55 leading-relaxed mb-3">{item.summary}</p>
+                    )}
+                    {item.bullets.length > 0 && (
+                      <ul class="flex flex-col gap-2">
+                        {item.bullets.map((b) => (
+                          <li class="flex gap-2 text-sm text-white/50 leading-relaxed">
+                            <span class="mt-[7px] w-1 h-1 rounded-full bg-cyan-400/60 shrink-0"></span>
+                            <span>{b}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -173,11 +176,11 @@ const pillConfig: Record<string, { label: string; classes: string }> = {
     btn.addEventListener("click", () => {
       const isOpen = btn.getAttribute("aria-expanded") === "true";
       if (isOpen) {
-        body.style.maxHeight = "0";
+        body.style.gridTemplateRows = "0fr";
         btn.setAttribute("aria-expanded", "false");
         chevron?.classList.remove("rotate-180");
       } else {
-        body.style.maxHeight = body.scrollHeight + "px";
+        body.style.gridTemplateRows = "1fr";
         btn.setAttribute("aria-expanded", "true");
         chevron?.classList.add("rotate-180");
       }
@@ -186,6 +189,22 @@ const pillConfig: Record<string, { label: string; classes: string }> = {
 </script>
 
 <style>
+  /* ── Accordion con grid-template-rows ──
+     Técnica más confiable en Safari iOS que max-height.
+     El outer .accordion-body anima de 0fr → 1fr,
+     el inner .accordion-inner tiene overflow:hidden para clipear. */
+  .accordion-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s ease;
+  }
+
+  .accordion-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* ── Cards sin cambios visuales ── */
   .accordion-btn {
     transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   }
