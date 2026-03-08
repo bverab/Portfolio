@@ -138,7 +138,6 @@ const pillConfig: Record<string, { label: string; classes: string }> = {
                 )}
               </div>
 
-              <!-- Accordion body: grid-template-rows para compatibilidad total con Safari iOS -->
               <div class="accordion-body">
                 <div class="accordion-inner">
                   <div class="pt-4 pb-1">
@@ -170,41 +169,49 @@ const pillConfig: Record<string, { label: string; classes: string }> = {
 
 <script>
   document.querySelectorAll<HTMLButtonElement>(".accordion-btn").forEach((btn) => {
-    const body    = btn.querySelector<HTMLElement>(".accordion-body")!;
+    const body   = btn.querySelector<HTMLElement>(".accordion-body")!;
+    const inner  = btn.querySelector<HTMLElement>(".accordion-inner")!;
     const chevron = btn.querySelector<HTMLElement>(".chevron");
+
+    // Forzar height:0 explícito al cargar — evita espacio fantasma en Safari
+    body.style.height = "0px";
 
     btn.addEventListener("click", () => {
       const isOpen = btn.getAttribute("aria-expanded") === "true";
+
       if (isOpen) {
-        body.style.gridTemplateRows = "0fr";
+        // Primero fijar la altura actual en px, luego animar a 0
+        body.style.height = inner.offsetHeight + "px";
+        // Forzar reflow para que Safari registre el valor inicial
+        body.offsetHeight;
+        body.style.height = "0px";
         btn.setAttribute("aria-expanded", "false");
         chevron?.classList.remove("rotate-180");
       } else {
-        body.style.gridTemplateRows = "1fr";
+        // Medir altura real del contenido y animar hacia ella
+        const targetH = inner.offsetHeight;
+        body.style.height = targetH + "px";
         btn.setAttribute("aria-expanded", "true");
         chevron?.classList.add("rotate-180");
+        // Al terminar la transición, soltar a "auto" para que reflows futuros funcionen
+        body.addEventListener("transitionend", () => {
+          if (btn.getAttribute("aria-expanded") === "true") {
+            body.style.height = "auto";
+          }
+        }, { once: true });
       }
     });
   });
 </script>
 
 <style>
-  /* ── Accordion con grid-template-rows ──
-     Técnica más confiable en Safari iOS que max-height.
-     El outer .accordion-body anima de 0fr → 1fr,
-     el inner .accordion-inner tiene overflow:hidden para clipear. */
+  /* height explícito en px — técnica más compatible con Safari iOS */
   .accordion-body {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 0.35s ease;
-  }
-
-  .accordion-inner {
     overflow: hidden;
-    min-height: 0;
+    height: 0px;
+    transition: height 0.35s ease;
   }
 
-  /* ── Cards sin cambios visuales ── */
   .accordion-btn {
     transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   }
