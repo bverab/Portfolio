@@ -11,17 +11,42 @@ interface Props {
 }
 
 const { description, title } = Astro.props
+const siteUrl = "https://portfolio-ten-olive-65.vercel.app"
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO básico -->
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content="Bastián Vera Benavides" />
+
+    <!-- Open Graph (WhatsApp, LinkedIn, Facebook, iMessage) -->
+    <meta property="og:type"         content="website" />
+    <meta property="og:url"          content={siteUrl} />
+    <meta property="og:title"        content={title} />
+    <meta property="og:description"  content={description} />
+    <meta property="og:image"        content={`${siteUrl}/og-image.png`} />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt"    content="Portfolio de Bastián Vera — Data Scientist" />
+    <meta property="og:locale"       content="es_CL" />
+    <meta property="og:site_name"    content="Bastián Vera · Portfolio" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image"       content={`${siteUrl}/og-image.png`} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
     <ViewTransitions />
   </head>
   <body>
@@ -54,28 +79,24 @@ const { description, title } = Astro.props
   interface Star {
     x: number;
     y: number;
-    len: number;       // longitud de la estela
+    len: number;
     speed: number;
-    angle: number;     // ángulo en radianes (diagonal suave)
+    angle: number;
     opacity: number;
     width: number;
-    life: number;      // frames actuales
-    maxLife: number;   // frames totales de vida
+    life: number;
+    maxLife: number;
   }
 
   const stars: Star[] = [];
-  const MAX_STARS = 4; // máx simultáneas — muy sutil
+  const MAX_STARS = 4;
 
   function randomStar(): Star {
-    // ángulo diagonal suave: entre 20° y 40° (izq→der, arriba→abajo)
     const angleDeg = 25 + Math.random() * 15;
     const angle    = (angleDeg * Math.PI) / 180;
-
-    // nace en cualquier punto del borde superior o izquierdo
     const fromTop  = Math.random() > 0.4;
     const x = fromTop ? Math.random() * canvas.width : 0;
     const y = fromTop ? 0 : Math.random() * canvas.height * 0.5;
-
     return {
       x, y,
       len:     120 + Math.random() * 180,
@@ -88,7 +109,6 @@ const { description, title } = Astro.props
     };
   }
 
-  // Siembra inicial espaciada en el tiempo
   let frameCount = 0;
 
   function spawnIfNeeded() {
@@ -99,14 +119,12 @@ const { description, title } = Astro.props
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     spawnIfNeeded();
 
     for (let i = stars.length - 1; i >= 0; i--) {
       const s = stars[i];
       s.life++;
 
-      // Fade in primero 20% de vida, fade out últimos 30%
       const progress = s.life / s.maxLife;
       if (progress < 0.2)       s.opacity = progress / 0.2;
       else if (progress > 0.7)  s.opacity = 1 - (progress - 0.7) / 0.3;
@@ -115,19 +133,15 @@ const { description, title } = Astro.props
       s.x += Math.cos(s.angle) * s.speed;
       s.y += Math.sin(s.angle) * s.speed;
 
-      // Punto cabeza de la estrella
       const headX = s.x;
       const headY = s.y;
-
-      // Punto cola (hacia atrás en el ángulo)
       const tailX = headX - Math.cos(s.angle) * s.len;
       const tailY = headY - Math.sin(s.angle) * s.len;
 
-      // Gradiente de la estela: cabeza brillante → cola transparente
       const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
-      grad.addColorStop(0,   `rgba(0, 220, 255, 0)`);        // cola invisible
+      grad.addColorStop(0,   `rgba(0, 220, 255, 0)`);
       grad.addColorStop(0.6, `rgba(0, 220, 255, ${s.opacity * 0.25})`);
-      grad.addColorStop(1,   `rgba(180, 240, 255, ${s.opacity * 0.9})`); // cabeza cyan brillante
+      grad.addColorStop(1,   `rgba(180, 240, 255, ${s.opacity * 0.9})`);
 
       ctx.beginPath();
       ctx.moveTo(tailX, tailY);
@@ -137,16 +151,14 @@ const { description, title } = Astro.props
       ctx.lineCap     = "round";
       ctx.stroke();
 
-      // Pequeño destello en la cabeza
       const glow = ctx.createRadialGradient(headX, headY, 0, headX, headY, 3);
-      glow.addColorStop(0,   `rgba(180, 240, 255, ${s.opacity * 0.8})`);
-      glow.addColorStop(1,   `rgba(0, 220, 255, 0)`);
+      glow.addColorStop(0, `rgba(180, 240, 255, ${s.opacity * 0.8})`);
+      glow.addColorStop(1, `rgba(0, 220, 255, 0)`);
       ctx.beginPath();
       ctx.arc(headX, headY, 3, 0, Math.PI * 2);
       ctx.fillStyle = glow;
       ctx.fill();
 
-      // Eliminar si salió de pantalla o cumplió su vida
       if (s.life >= s.maxLife || s.x > canvas.width + 50 || s.y > canvas.height + 50) {
         stars.splice(i, 1);
       }
